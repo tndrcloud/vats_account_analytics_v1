@@ -1,6 +1,6 @@
 # my-project
-db.py
-structure.py
+app/database/db.py
+app/database/structure.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
