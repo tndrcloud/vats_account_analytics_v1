@@ -5,11 +5,12 @@
 <h2>Требования</h2>
 
 - python 3.11
-- fastapi
+- fastapi, fastapi-users
 - sqlalchemy
 - postgresql
+- alembic
 - uvicorn
-- docker
+- dockerfile, docker-compose
 
 Зависимости можно установить через: pip install -r requirements.txt 
 
@@ -31,11 +32,17 @@
     -o /usr/local/bin/docker-compose
     - sudo chmod +x /usr/local/bin/docker-compose
 
-2. Создать файл .env в директории ./vats_account_analytics и заполнить переменные окружения, где: 
+2. Создать файл .env в директории ./vats_account_analytics_v1 и заполнить переменные окружения, где: 
 
 - DB_USER={логин пользователя PostgreSQL}
 - DB_PASSWORD={пароль от пользователя PostgreSQL}
 - DB_NAME={название БД в PostgreSQL}
-- DB_PATH={путь для доступа к БД - postgresql://login:password@ip:port/dbname}
+- DB_PATH={путь для доступа к БД - postgresql+asyncpg://login:password@ip:port/dbname}
+- DB_USER=admin
+- DB_PORT={порт для доступа к БД}
+- SERVER_HOST={IP-адрес для приложения app}
+- SERVER_PORT={порт для приложения app}
+- JWT_SECRET={секретный ключ для JWT токена аутентификации}
+- RESET_VERIF_SECRET={секретный ключ для сброса или верификации}
 
-3. Запустить команду: docker-compose -f docker-compose-app.yaml up -d из директории ./vats_account_analytics
+3. Запустить команду: docker-compose -f docker-compose-app.yaml up -d из директории ./vats_account_analytics_v1
