@@ -1,0 +1,8 @@
+Generic single-database configuration.
+
+Commands (use on directory, where alembic.ini):
+
+alembic init migrations
+alembic revision --autogenerate -m "{migrations name}"
+alembic upgrade {revision number}
+alembic downgrade {revision number}
