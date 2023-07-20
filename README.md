@@ -38,7 +38,6 @@
 - DB_PASSWORD={пароль от пользователя PostgreSQL}
 - DB_NAME={название БД в PostgreSQL}
 - DB_PATH={путь для доступа к БД - postgresql+asyncpg://login:password@ip:port/dbname}
-- DB_USER=admin
 - DB_PORT={порт для доступа к БД}
 - SERVER_HOST={IP-адрес для приложения app}
 - SERVER_PORT={порт для приложения app}
