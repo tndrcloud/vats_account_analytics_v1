@@ -1,5 +1,4 @@
-# from main import current_superuser
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from api.api_v1.endpoints import data, analytics, calls
 
 
