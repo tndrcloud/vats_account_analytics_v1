@@ -76,3 +76,4 @@
 - RESET_VERIF_SECRET={секретный ключ для сброса или верификации}
 
 3. Запустить команду: docker-compose -f docker-compose-app.yaml up -d из директории ./vats_account_analytics_v1
+4. Провести миграцию БД: alembic upgrade head
