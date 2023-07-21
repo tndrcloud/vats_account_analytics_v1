@@ -3,7 +3,7 @@ from fastapi import Depends, Request
 from fastapi_users import FastAPIUsers
 from fastapi_users import BaseUserManager, IntegerIDMixin, exceptions, schemas, models
 from auth.auth import auth_backend
-from auth.database import User, get_user_db
+from auth.user import User, get_user_db
 from settings import settings
 
 
