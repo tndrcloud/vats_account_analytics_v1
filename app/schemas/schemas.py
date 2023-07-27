@@ -1,6 +1,7 @@
+from datetime import datetime
 from enum import Enum
 from pydantic import BaseModel, Field
-from typing import List, Dict, Optional, Union
+from typing import List, Optional
 
 
 class RoleType(Enum):
@@ -9,11 +10,31 @@ class RoleType(Enum):
     user = "user"
 
 
+class Role(BaseModel):
+    id: int = Field(ge=0)
+    name: RoleType
+    permissions: str
+
+
+    class Config:
+        from_attributes = True
+
+
 class User(BaseModel):
     id: int = Field(ge=0)
-    role: RoleType
-    login: str
-    password_hash: str
+    email: str
+    username: str
+    hashed_password: str
+    registered_at: datetime
+    role_id: int
+    is_active: bool
+    is_superuser: bool
+    is_verified: bool
+
+
+    class Config:
+        from_attributes = True
+    
 
 
 class DomainMainInfo(BaseModel):
@@ -43,11 +64,15 @@ class DomainMainInfo(BaseModel):
     notify_balance_reduction: bool
     new_routing: bool
     allow_transcoding_audio_streams: bool
-    balance: float
+    balance: str
     vol_block: bool
     adm_block: bool
     fin_block: bool
     rate: str
+
+
+    class Config:
+        from_attributes = True
 
 
 class DomainActiveUser(BaseModel):
@@ -255,3 +280,23 @@ class DomainRouteSettings(BaseModel):
     max_count_renewals_registration: int = Field(ge=0)
     ip_address: str
     destination_domain_or_sip_proxy: str
+
+
+class DomainData(BaseModel):
+    main_info: DomainMainInfo
+    active_users: List[DomainActiveUser]
+    incoming_line: List[DomainIncomingLine]
+    user_info: List[DomainUserInfo]
+    contacts_user: List[DomainContactsUser]
+    groups_user: List[DomainGroupsUser]
+    group_info: List[DomainGroupInfo]
+    users_in_group: List[DomainUsersInGroup]
+    names_id_ivr: List[DomainNamesIdIvr]
+    ivr_params_events: List[DomainIvrParamsEvents]
+    route_info: List[DomainRouteInfo]
+    route_settings: List[DomainRouteSettings]
+
+    
+    class Config:
+        from_attributes = True
+        
