@@ -278,12 +278,12 @@ async def get_route_info(
         return response[0]["route_info"]
 
 
-@router.get("/get_route_settings")
+@router.get("/get_route_settings", response_model=List[DomainRouteSettings])
 async def get_route_settings(
     domain: str,
     name: str = None,
     session: AsyncSession = Depends(get_async_session)
-    ):
+    ) -> List[DomainRouteSettings]:
     query = select(domain_data.c.route_settings).where(domain_data.c.name == domain)
     request = await session.execute(query)
     response = request.mappings().all()
