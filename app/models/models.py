@@ -29,3 +29,23 @@ user = Table(
     Column("is_superuser", Boolean, default=False, nullable=False),
     Column("is_verified",Boolean, default=False, nullable=False)
 )
+
+
+domain_data = Table(
+    "domain_data",
+    metadata,
+    
+    Column("name", String, primary_key=True),
+    Column("main_info", JSON, nullable=False),
+    Column("active_users", JSON, nullable=False),
+    Column("incoming_line", JSON, nullable=False),
+    Column("user_info", JSON, nullable=False),
+    Column("contacts_user", JSON, nullable=False),
+    Column("groups_user", JSON, nullable=False),
+    Column("group_info", JSON, nullable=False),
+    Column("users_in_group", JSON, nullable=False),
+    Column("names_id_ivr", JSON, nullable=False),
+    Column("ivr_params_events", JSON, nullable=False),
+    Column("route_info", JSON, nullable=False),
+    Column("route_settings", JSON, nullable=False)
+)

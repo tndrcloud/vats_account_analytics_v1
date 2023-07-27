@@ -1,15 +1,56 @@
+import json
 from fastapi import APIRouter
 from database import db
 from typing import List
 from schemas.schemas import *
+from models.models import domain_data
+from fastapi import Depends
+from sqlalchemy import select, insert
+from database.session import get_async_session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 router = APIRouter()
 
 
-@router.get("/get_main_info", response_model=List[DomainMainInfo])
-async def get_main_info(domain: str) -> List[DomainMainInfo]:
-    return [main_info for main_info in db.domain_main_info if main_info.get("domain_name") == domain]
+@router.get("/get_main_info")
+async def get_main_info(
+    domain: str,
+    session: AsyncSession = Depends(get_async_session)
+    ):
+    query = select(domain_data.c.domain_main_info).where(domain_data.c.domain_name == domain)
+    result = await session.execute(query)
+    return result.mappings().all()
+
+
+@router.post("/add_domain_data")
+async def add_domain_data(
+    data: DomainData,
+    session: AsyncSession = Depends(get_async_session)
+    ):
+    for i in data:
+        print(i.__dict__.keys())
+        
+    statement = insert(domain_data).values(
+        name = data.main_info.domain_name,
+        main_info = data.main_info.model_dump_json(),
+        active_users = data.active_users.model_dump_json(),
+        incoming_line = data.incoming_line.model_dump_json(),
+        user_info = data.user_info.model_dump_json(),
+        contacts_user = data.contacts_user.model_dump_json(),
+        groups_user = data.groups_user.model_dump_json(),
+        group_info = data.group_info.model_dump_json(),
+        users_in_group = data.users_in_group.model_dump_json(),
+        names_id_ivr = data.names_id_ivr.model_dump_json(),
+        ivr_params_events = data.ivr_params_events.model_dump_json(),
+        route_info = data.route_info.model_dump_json(),
+        route_settings = data.route_settings.model_dump_json()
+        )
+    
+    await session.execute(statement)
+    await session.commit()
+
+    return {"status": "successfully"}
 
 
 @router.get("/get_active_users", response_model=List[DomainActiveUser])
