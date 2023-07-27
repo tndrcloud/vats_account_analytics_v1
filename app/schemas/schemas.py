@@ -71,6 +71,10 @@ class DomainMainInfo(BaseModel):
     rate: str
 
 
+    class Config:
+        from_attributes = True
+
+
 class DomainActiveUser(BaseModel):
     username: str
     login: str
@@ -280,30 +284,19 @@ class DomainRouteSettings(BaseModel):
 
 class DomainData(BaseModel):
     main_info: DomainMainInfo
-    active_users: DomainActiveUser
-    incoming_line: DomainIncomingLine
-    user_info: DomainUserInfo
-    contacts_user: DomainContactsUser
-    groups_user: DomainGroupsUser
-    group_info: DomainGroupInfo
-    users_in_group: DomainUsersInGroup
-    names_id_ivr: DomainNamesIdIvr
-    ivr_params_events: DomainIvrParamsEvents
-    route_info: DomainRouteInfo
-    route_settings: DomainRouteSettings
+    active_users: List[DomainActiveUser]
+    incoming_line: List[DomainIncomingLine]
+    user_info: List[DomainUserInfo]
+    contacts_user: List[DomainContactsUser]
+    groups_user: List[DomainGroupsUser]
+    group_info: List[DomainGroupInfo]
+    users_in_group: List[DomainUsersInGroup]
+    names_id_ivr: List[DomainNamesIdIvr]
+    ivr_params_events: List[DomainIvrParamsEvents]
+    route_info: List[DomainRouteInfo]
+    route_settings: List[DomainRouteSettings]
 
-
-# class DomainData(BaseModel):
-#     main_info: DomainMainInfo
-#     active_users: List[DomainActiveUser]
-#     incoming_line: List[DomainIncomingLine]
-#     user_info: List[DomainUserInfo]
-#     contacts_user: List[DomainContactsUser]
-#     groups_user: List[DomainGroupsUser]
-#     group_info: List[DomainGroupInfo]
-#     users_in_group: List[DomainUsersInGroup]
-#     names_id_ivr: List[DomainNamesIdIvr]
-#     ivr_params_events: List[DomainIvrParamsEvents]
-#     route_info: List[DomainRouteInfo]
-#     route_settings: List[DomainRouteSettings]
     
+    class Config:
+        from_attributes = True
+        

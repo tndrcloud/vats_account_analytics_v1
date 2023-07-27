@@ -29,13 +29,6 @@ async def validation_exception_handler(request: Request, exc: ResponseValidation
     )
 
 
-@app.get("/get_users_db", response_model=List[User])
-async def get_users_db(username: str, session: AsyncSession = Depends(get_async_session)) -> List[User]:
-    query = select(user).where(user.c.username == username)
-    result = await session.execute(query)
-    return result.all()
-
-
 app.include_router(
     auth_router,
     prefix=settings.API_AUTH,

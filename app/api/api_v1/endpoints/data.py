@@ -1,12 +1,11 @@
 from fastapi import APIRouter
-from database import db
 from typing import List
 from schemas.schemas import *
 from models.models import domain_data
 from fastapi import Depends, status
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy import select, insert
+from sqlalchemy import select, insert, or_
 from database.session import get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,31 +13,24 @@ from sqlalchemy.ext.asyncio import AsyncSession
 router = APIRouter()
 
 
-@router.get("/get_main_info")
-async def get_main_info(
-    domain: str,
-    session: AsyncSession = Depends(get_async_session)
-    ):
-    query = select(domain_data.c.domain_main_info).where(domain_data.c.domain_name == domain)
-    result = await session.execute(query)
-    return result.mappings().all()
-
-
 @router.post("/add_domain_data", response_model=DomainData)
 async def add_domain_data(
     data: DomainData,
     session: AsyncSession = Depends(get_async_session)
-    ):
+    ) -> DomainData:
     try:
         json_data = jsonable_encoder(data)
         statement = insert(domain_data).values(
             name = data.main_info.domain_name,
             **json_data
             )
-
         await session.execute(statement)
         await session.commit()
-        return {"status": "successfully"}
+
+        return JSONResponse(
+            status_code=status.HTTP_201_CREATED,
+            content=jsonable_encoder({"detail": "successfully"})
+        )
     
     except Exception:
         return JSONResponse(
@@ -46,62 +38,171 @@ async def add_domain_data(
             content=jsonable_encoder({"detail": "validation error"})
         )
 
-@router.get("/get_active_users", response_model=List[DomainActiveUser])
-async def get_active_users(domain: str) -> List[DomainActiveUser]:
-    return [active for active in db.active_users if str(active.get("sip_uri")).split("@")[1] == domain]
 
+@router.get("/get_main_info", response_model=DomainMainInfo)
+async def get_main_info(
+    domain: str,
+    session: AsyncSession = Depends(get_async_session)
+    ) -> DomainMainInfo:
+    query = select(domain_data.c.main_info).where(domain_data.c.name == domain)
+    request = await session.execute(query)
+    response = request.mappings().all()
+
+    if response:
+        return response[0]["main_info"]
+    return response
+
+
+@router.get("/get_active_users", response_model=List[DomainActiveUser])
+async def get_active_users(
+    domain: str,
+    session: AsyncSession = Depends(get_async_session)
+    ) -> List[DomainActiveUser]:
+    query = select(domain_data.c.active_users).where(domain_data.c.name == domain)
+    request = await session.execute(query)
+    response = request.mappings().all()
+
+    if response:
+        return response[0]["active_users"]
+    return response
+    
 
 @router.get("/get_incoming_line_info", response_model=List[DomainIncomingLine])
-async def get_incoming_line_info(incoming_line: str) -> List[DomainIncomingLine]:
-    return [line for line in db.info_numbers if line.get("params").get("incoming_line") == incoming_line]
+async def get_incoming_line_info(
+    domain: str,
+    session: AsyncSession = Depends(get_async_session)
+    ) -> List[DomainIncomingLine]:
+    query = select(domain_data.c.incoming_line).where(domain_data.c.name == domain)
+    request = await session.execute(query)
+    response = request.mappings().all()
+
+    if response:
+        return response[0]["incoming_line"]
+    return response
 
 
 @router.get("/get_user_info", response_model=List[DomainUserInfo])
-async def get_user_info(username: str = None, login: str = None) -> List[DomainUserInfo]:
-    return [user for user in db.info_user if user.get("username") == username or user.get("login") == login]
+async def get_user_info(
+    domain: str,
+    username: str = None, 
+    number: int = None,
+    session: AsyncSession = Depends(get_async_session)
+    ) -> List[DomainUserInfo]:
+    query = select(domain_data.c.user_info).where(domain_data.c.name == domain)
+    request = await session.execute(query)
+    response = request.mappings().all()
+    
+    user_info = []
+    if response:
+        for info in response[0]["user_info"]:
+            if info["username"] == username or info["inner_number"] == number:
+                user_info.append(info)
 
+    if user_info:
+        return user_info
+    elif not response:
+        return response
+    elif not username and not number: 
+        return response[0]["user_info"]
+    
 
 @router.get("/get_contacts_user", response_model=List[DomainContactsUser])
-async def get_contacts_user(username: str = None, login: str = None) -> List[DomainContactsUser]:
-    contacts = []
-    for contact in db.contacts_user:
-        for key, value in contact.items():
-            if key == "contact_numbers_user":
-                contacts.extend(value)
-    return [cnt for cnt in contacts if cnt.get("username") == username or cnt.get("login") == login]
+async def get_contacts_user(
+    domain: str,
+    username: str = None, 
+    login: str = None,
+    session: AsyncSession = Depends(get_async_session)
+    ) -> List[DomainContactsUser]:
+    query = select(domain_data.c.contacts_user).where(domain_data.c.name == domain)
+    request = await session.execute(query)
+    response = request.mappings().all()
+
+    user_contacts = []
+    for contact in response[0]["contacts_user"]:
+        if contact["username"] == username or contact["login"] == login:
+            user_contacts.append(contact)
+
+    if user_contacts:
+        return user_contacts
+    elif not username and not login: 
+        return response[0]["contacts_user"]
 
 
-@router.get("/get_groups_user", response_model=List[DomainGroupsUser])
-async def get_groups_user(username: str = None, login: str = None) -> List[DomainGroupsUser]:
-    return [group for group in db.groups_user if group.get("username") == username or group.get("login") == login]
+@router.get("/get_groups_user")
+async def get_groups_user(
+    domain: str,
+    username: str = None, 
+    login: str = None,
+    session: AsyncSession = Depends(get_async_session)
+    ):
+    query = select(domain_data.c.groups_user).where(domain_data.c.name == domain)
+    result = await session.execute(query)
+    return result.mappings().all()
 
 
-@router.get("/get_group_info", response_model=List[DomainGroupInfo])
-async def get_groups_user(group_name: str = None, number: int = None) -> List[DomainGroupInfo]:
-    return [grp for grp in db.group_info if grp.get("group_name") == group_name or grp.get("number") == number]
+@router.get("/get_group_info")
+async def get_group_info(
+    domain: str,
+    group_name: str = None, 
+    number: int = None,
+    session: AsyncSession = Depends(get_async_session)
+    ):
+    query = select(domain_data.c.group_info).where(domain_data.c.name == domain)
+    result = await session.execute(query)
+    return result.mappings().all()
 
 
-@router.get("/get_users_in_group", response_model=List[DomainUsersInGroup])
-async def get_groups_user(group_name: str = None) -> List[DomainUsersInGroup]:
-    return [usrg for usrg in db.users_in_group if usrg.get("group_name") == group_name]
+@router.get("/get_users_in_group")
+async def get_users_in_group(
+    domain: str,
+    group_name: str = None,
+    session: AsyncSession = Depends(get_async_session)
+    ):
+    query = select(domain_data.c.users_in_group).where(domain_data.c.name == domain)
+    result = await session.execute(query)
+    return result.mappings().all()
 
 
-@router.get("/get_name_id_ivr", response_model=List[DomainNamesIdIvr])
-async def get_groups_user(ivr_name: str = None) -> List[DomainNamesIdIvr]:
-    return [ivr for ivr in db.names_ivr if ivr.get("ivr_name") == ivr_name]
+@router.get("/get_name_id_ivr")
+async def get_name_id_ivr(
+    domain: str,
+    ivr_name: str = None,
+    session: AsyncSession = Depends(get_async_session)
+    ):
+    query = select(domain_data.c.names_id_ivr).where(domain_data.c.name == domain)
+    result = await session.execute(query)
+    return result.mappings().all()
 
 
-@router.get("/get_events_and_params_ivr", response_model=List[DomainIvrParamsEvents])
-async def get_groups_user(name_menu: str = None, ivr_id: int = None) -> List[DomainIvrParamsEvents]:
-    return [par for par in db.params_events_ivr if par.get("name_menu") == name_menu or par.get("ivr_id") == ivr_id]
+@router.get("/get_events_and_params_ivr")
+async def get_events_and_params_ivr(
+    domain: str,
+    name_menu: str = None, 
+    ivr_id: int = None,
+    session: AsyncSession = Depends(get_async_session)
+    ):
+    query = select(domain_data.c.ivr_params_events).where(domain_data.c.name == domain)
+    result = await session.execute(query)
+    return result.mappings().all()
 
 
-@router.get("/get_route_info", response_model=List[DomainRouteInfo])
-async def get_groups_user(route_id: int = None) -> List[DomainRouteInfo]:
-    return [route for route in db.route_info if route.get("route_id") == route_id]
+@router.get("/get_route_info")
+async def get_route_info(
+    domain: str,
+    route_id: int = None,
+    session: AsyncSession = Depends(get_async_session)
+    ):
+    query = select(domain_data.c.route_info).where(domain_data.c.name == domain)
+    result = await session.execute(query)
+    return result.mappings().all()
 
 
-@router.get("/get_route_settings", response_model=List[DomainRouteSettings])
-async def get_groups_user(name: str = None) -> List[DomainRouteSettings]:
-    return [setting for setting in db.route_settings if setting.get("name") == name]
-
+@router.get("/get_route_settings")
+async def get_route_settings(
+    domain: str,
+    name: str = None,
+    session: AsyncSession = Depends(get_async_session)
+    ):
+    query = select(domain_data.c.route_settings).where(domain_data.c.name == domain)
+    result = await session.execute(query)
+    return result.mappings().all()
