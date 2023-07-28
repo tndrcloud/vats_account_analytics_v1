@@ -9,7 +9,6 @@ from sqlalchemy import select, insert, or_
 from database.session import get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi_cache.decorator import cache
-import asyncio
 
 
 router = APIRouter()
