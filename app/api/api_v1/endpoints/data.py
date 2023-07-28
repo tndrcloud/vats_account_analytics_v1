@@ -8,6 +8,8 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select, insert, or_
 from database.session import get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi_cache.decorator import cache
+import asyncio
 
 
 router = APIRouter()
@@ -40,6 +42,7 @@ async def add_domain_data(
 
 
 @router.get("/get_main_info", response_model=DomainMainInfo)
+@cache(expire=30)
 async def get_main_info(
     domain: str,
     session: AsyncSession = Depends(get_async_session)
@@ -54,6 +57,7 @@ async def get_main_info(
 
 
 @router.get("/get_active_users", response_model=List[DomainActiveUser])
+@cache(expire=30)
 async def get_active_users(
     domain: str,
     session: AsyncSession = Depends(get_async_session)
@@ -68,6 +72,7 @@ async def get_active_users(
     
 
 @router.get("/get_incoming_line_info", response_model=List[DomainIncomingLine])
+@cache(expire=30)
 async def get_incoming_line_info(
     domain: str,
     session: AsyncSession = Depends(get_async_session)
@@ -82,6 +87,7 @@ async def get_incoming_line_info(
 
 
 @router.get("/get_user_info", response_model=List[DomainUserInfo])
+@cache(expire=30)
 async def get_user_info(
     domain: str,
     username: str = None, 
@@ -107,6 +113,7 @@ async def get_user_info(
     
 
 @router.get("/get_contacts_user", response_model=List[DomainContactsUser])
+@cache(expire=30)
 async def get_contacts_user(
     domain: str,
     username: str = None, 
@@ -132,6 +139,7 @@ async def get_contacts_user(
 
 
 @router.get("/get_groups_user", response_model=List[DomainGroupsUser])
+@cache(expire=30)
 async def get_groups_user(
     domain: str,
     username: str = None, 
@@ -157,6 +165,7 @@ async def get_groups_user(
 
 
 @router.get("/get_group_info", response_model=List[DomainGroupInfo])
+@cache(expire=30)
 async def get_group_info(
     domain: str,
     group_name: str = None, 
@@ -182,6 +191,7 @@ async def get_group_info(
 
 
 @router.get("/get_users_in_group", response_model=List[DomainUsersInGroup])
+@cache(expire=30)
 async def get_users_in_group(
     domain: str,
     group_name: str = None,
@@ -206,6 +216,7 @@ async def get_users_in_group(
 
 
 @router.get("/get_name_id_ivr", response_model=List[DomainNamesIdIvr])
+@cache(expire=30)
 async def get_name_id_ivr(
     domain: str,
     ivr_name: str = None,
@@ -230,6 +241,7 @@ async def get_name_id_ivr(
 
 
 @router.get("/get_events_and_params_ivr", response_model=List[DomainIvrParamsEvents])
+@cache(expire=30)
 async def get_events_and_params_ivr(
     domain: str,
     name_menu: str = None, 
@@ -255,6 +267,7 @@ async def get_events_and_params_ivr(
 
 
 @router.get("/get_route_info", response_model=List[DomainRouteInfo])
+@cache(expire=30)
 async def get_route_info(
     domain: str,
     route_id: int = None,
@@ -279,6 +292,7 @@ async def get_route_info(
 
 
 @router.get("/get_route_settings", response_model=List[DomainRouteSettings])
+@cache(expire=30)
 async def get_route_settings(
     domain: str,
     name: str = None,
