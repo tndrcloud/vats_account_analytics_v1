@@ -1,17 +1,15 @@
 import uvicorn
-from typing import List
 from settings import settings
 from fastapi import FastAPI, Request, status, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import ResponseValidationError
 from fastapi.responses import JSONResponse
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from database.session import get_async_session
-from schemas.schemas import User
-from models.models import user
 from api.api_v1.api import api_router
-from auth.manager import auth_router, current_superuser
+from auth.manager import auth_router, register_router, current_superuser
+from redis import asyncio as async_redis
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from fastapi_cache.decorator import cache
 
 
 app = FastAPI(
@@ -36,10 +34,26 @@ app.include_router(
 )
 
 app.include_router(
+    register_router,
+    prefix=settings.API_AUTH,
+    tags=["Authorization"],
+)
+
+app.include_router(
     api_router,
     prefix=settings.API_V1,
     dependencies=[Depends(current_superuser)]
 )
+
+
+@app.on_event("startup")
+async def startup():
+    redis = async_redis.from_url(
+        f"redis://localhost:{settings.REDIS_PORT}", 
+        encoding="utf8", 
+        decode_responses=True)
+    
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
 
 
 if __name__ == '__main__':

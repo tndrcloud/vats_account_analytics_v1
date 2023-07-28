@@ -40,6 +40,7 @@
 - sqlalchemy
 - postgresql
 - alembic
+- redis
 - uvicorn
 - dockerfile, docker-compose
 
@@ -74,6 +75,9 @@
 - SERVER_PORT={порт для приложения app}
 - JWT_SECRET={секретный ключ для JWT токена аутентификации}
 - RESET_VERIF_SECRET={секретный ключ для сброса или верификации}
+- REDIS_PASSWORD={пароль пользователя redis}
+- REDIS_PORT={порт redis БД}
+- REDIS_DATABASE={кол-во БД, стандартное значение - 16}
 
 3. Запустить команду: docker-compose -f docker-compose-app.yaml up -d из директории ./vats_account_analytics_v1
 4. Провести миграцию БД: alembic upgrade head

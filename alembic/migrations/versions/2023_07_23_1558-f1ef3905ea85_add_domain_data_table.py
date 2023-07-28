@@ -32,7 +32,7 @@ def upgrade() -> None:
     sa.Column('ivr_params_events', sa.JSON(), nullable=False),
     sa.Column('route_info', sa.JSON(), nullable=False),
     sa.Column('route_settings', sa.JSON(), nullable=False),
-    sa.PrimaryKeyConstraint('domain_name')
+    sa.PrimaryKeyConstraint('name')
     )
     # ### end Alembic commands ###
 
