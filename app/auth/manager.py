@@ -5,6 +5,7 @@ from fastapi_users import BaseUserManager, IntegerIDMixin, exceptions, schemas, 
 from auth.auth import auth_backend
 from auth.user import User, get_user_db
 from settings import settings
+from auth.schemas import UserRead, UserCreate
 
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
@@ -35,7 +36,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         
         password = user_dict.pop("password")
         user_dict["hashed_password"] = self.password_helper.hash(password)
-        user_dict["role_id"] = 3
+        user_dict["role_id"] = 1
 
         created_user = await self.user_db.create(user_dict)
         await self.on_after_register(created_user, request)
@@ -53,4 +54,5 @@ fastapi_users = FastAPIUsers[User, int](
 )
 
 auth_router = fastapi_users.get_auth_router(auth_backend)
+register_router = fastapi_users.get_register_router(UserRead, UserCreate)
 current_superuser = fastapi_users.current_user(active=True, superuser=True)

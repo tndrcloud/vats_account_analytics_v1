@@ -5,7 +5,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import ResponseValidationError
 from fastapi.responses import JSONResponse
 from api.api_v1.api import api_router
-from auth.manager import auth_router, current_superuser
+from auth.manager import auth_router, register_router, current_superuser
 
 
 app = FastAPI(
@@ -25,6 +25,12 @@ async def validation_exception_handler(request: Request, exc: ResponseValidation
 
 app.include_router(
     auth_router,
+    prefix=settings.API_AUTH,
+    tags=["Authorization"],
+)
+
+app.include_router(
+    register_router,
     prefix=settings.API_AUTH,
     tags=["Authorization"],
 )
