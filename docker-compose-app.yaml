@@ -16,6 +16,21 @@ services:
     networks:
       - custom
 
+  postgresql_test:
+    container_name: postgre_db_test
+    image: postgres:15.2-alpine3.17
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME_TEST}
+    ports:
+      - "6000:5432"
+    restart: on-failure
+    networks:
+      - custom
+
   redis:
     container_name: redis
     image: redis:latest
