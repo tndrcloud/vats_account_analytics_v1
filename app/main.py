@@ -9,7 +9,6 @@ from auth.manager import auth_router, register_router, current_superuser
 from redis import asyncio as async_redis
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-from fastapi_cache.decorator import cache
 
 
 app = FastAPI(

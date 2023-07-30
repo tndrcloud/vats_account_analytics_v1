@@ -2,11 +2,12 @@ import asyncio
 import pytest
 from httpx import AsyncClient
 from fastapi.testclient import TestClient
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Dict
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.pool import NullPool
 from sqlalchemy.orm import sessionmaker
 from database.session import get_async_session
+from tests.utils.utils import get_user_token
 from models.models import metadata
 from settings import settings
 from main import app
@@ -27,6 +28,9 @@ async def override_get_async_session() -> AsyncGenerator[AsyncSession, None]:
 app.dependency_overrides[get_async_session] = override_get_async_session
 
 
+client = TestClient(app)
+
+
 @pytest.fixture(autouse=True, scope="session")
 async def prepare_test_database():
     async with engine_test.begin() as connection:
@@ -44,9 +48,11 @@ def event_loop():
 
 
 @pytest.fixture(scope="session")
-async def ac() -> AsyncGenerator[AsyncClient, None]:
-    async with AsyncClient(app=app, base_url="http://test") as ac:
-        yield ac
-        
+async def async_client() -> AsyncGenerator[AsyncClient, None]:
+    async with AsyncClient(app=app, base_url="http://test", follow_redirects=True) as client:
+        yield client
+    
 
-client = TestClient(app)
+@pytest.fixture(scope="session")
+def user_token():
+    return get_user_token(client)

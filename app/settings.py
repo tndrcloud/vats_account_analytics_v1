@@ -29,5 +29,8 @@ class Settings(BaseSettings):
 
     REDIS_PORT: str = env("REDIS_PORT")
 
+    USER_LOGIN: str = env("USER_LOGIN")
+    USER_PASSWORD: str = env("USER_PASSWORD")
+
 
 settings = Settings()
