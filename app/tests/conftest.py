@@ -35,6 +35,7 @@ app.dependency_overrides[get_async_session] = override_get_async_session
 
 client = TestClient(app)
 
+
 @pytest.fixture(autouse=True, scope="session")
 def init_redis():
     redis = async_redis.from_url(
@@ -77,11 +78,10 @@ async def superuser_token():
         
         await session.execute(statement)
         await session.commit()
-
         create_superuser(client)
     
         statement = update(user).where(user.c.email == settings.ROOT_LOGIN).values(role_id=3, is_superuser=True)
         await session.execute(statement)
         await session.commit()
-
+        
     return get_superuser_token(client)
