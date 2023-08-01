@@ -36,7 +36,7 @@ async def add_domain_data(
     except Exception:
         return JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            content=jsonable_encoder({"detail": "validation error"})
+            content=jsonable_encoder({"detail": "error"})
         )
 
 

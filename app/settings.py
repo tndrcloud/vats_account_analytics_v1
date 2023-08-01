@@ -34,8 +34,12 @@ class Settings(BaseSettings):
     ROOT_PASSWORD: str = env("USER_PASSWORD")
     USER_LOGIN: str = env("USER_LOGIN")
     USER_PASSWORD: str = env("USER_PASSWORD")
-
     DOMAIN_NAME: str = env("DOMAIN_NAME")
+
+    SAMPLE_INCOMING_LINE: str = env("INCOMING_LINE")
+    SAMPLE_PREFIX: str = env("PREFIX")
+    SAMPLE_FILTER_LIST: str = env("FILTER_LIST")
+    SAMPLE_INNER_NUMBER: int = env("INNER_NUMBER")
 
 
 settings = Settings()

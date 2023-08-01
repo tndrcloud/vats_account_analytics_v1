@@ -39,7 +39,7 @@ json_data={
     "active_users": [
         {
         "username": "string",
-        "login": "string",
+        "login": settings.ROOT_LOGIN,
         "sip_uri": "string",
         "ip_address": "string",
         "expired": "string"
@@ -49,7 +49,7 @@ json_data={
     "incoming_line": [
         {
         "params": {
-            "incoming_line": "string",
+            "incoming_line": settings.SAMPLE_INCOMING_LINE,
             "sip_uri": "string",
             "sip_number": True,
             "only_incoming_calls": True
@@ -58,7 +58,7 @@ json_data={
         "routing_rules": [
             {
             "state": True,
-            "prefix": "string",
+            "prefix": settings.SAMPLE_PREFIX,
             "schedule": "string",
             "redirect_to": "string",
             "action": "string"
@@ -66,15 +66,15 @@ json_data={
         ],
 
         "filter_list": [
-            "string"
+            settings.SAMPLE_FILTER_LIST
             ]
         }
     ],
 
     "user_info": [
         {
-        "username": "string",
-        "inner_number": 0,
+        "username": settings.ROOT_LOGIN,
+        "inner_number": settings.SAMPLE_INNER_NUMBER,
         "email": "string",
         "login": "string",
         "is_supervisor": True,
@@ -99,8 +99,8 @@ json_data={
 
     "contacts_user": [
         {
-        "username": "string",
-        "login": "string",
+        "username": settings.ROOT_LOGIN,
+        "login": settings.ROOT_LOGIN,
         "is_on": True,
         "do_not_display_other": True,
         "number": "string",
