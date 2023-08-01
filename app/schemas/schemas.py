@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import Enum
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List, Optional, Union
 
 
 class RoleType(Enum):
@@ -83,11 +83,19 @@ class DomainActiveUser(BaseModel):
     expired: str
 
 
+    class Config:
+        from_attributes = True
+
+
 class ParamsIncomingLine(BaseModel):
     incoming_line: str
     sip_uri: str
     sip_number: bool
     only_incoming_calls: bool
+
+
+    class Config:
+        from_attributes = True
 
 
 class RoutingRuleIncomingLine(BaseModel):
@@ -98,10 +106,18 @@ class RoutingRuleIncomingLine(BaseModel):
     action: str
 
 
+    class Config:
+        from_attributes = True
+
+
 class DomainIncomingLine(BaseModel):
     params: ParamsIncomingLine
     routing_rules: List[RoutingRuleIncomingLine]
     filter_list: List[str]
+
+
+    class Config:
+        from_attributes = True
 
 
 class DomainUserInfo(BaseModel):
@@ -128,6 +144,10 @@ class DomainUserInfo(BaseModel):
     conversation_is_recording: bool
 
 
+    class Config:
+        from_attributes = True
+
+
 class ContactType(Enum):
     mobile = "Мобильный"
     ip_phone = "IP-телефон"
@@ -150,10 +170,18 @@ class DomainContactsUser(BaseModel):
     working_time: str | None
 
 
+    class Config:
+        from_attributes = True
+
+
 class DomainGroupsUser(BaseModel):
     username: str
     login: str
     groups_list: List[str] | None
+
+
+    class Config:
+        from_attributes = True
 
 
 class DomainGroupInfo(BaseModel):
@@ -169,9 +197,17 @@ class DomainGroupInfo(BaseModel):
     voicemail_greeting: str | None
 
 
+    class Config:
+        from_attributes = True
+
+
 class UsersInGroup(BaseModel):
     username: str
     priority: int = Field(ge=0)
+
+
+    class Config:
+        from_attributes = True
 
 
 class DomainUsersInGroup(BaseModel):
@@ -179,16 +215,16 @@ class DomainUsersInGroup(BaseModel):
     users_list: List[UsersInGroup]
 
 
+    class Config:
+        from_attributes = True
+
+
 class DomainNamesIdIvr(BaseModel):
     ivr_name: str
     ivr_id: int = Field(ge=0)
 
-
-class EventsIvr(Enum):
-    star = "*"
-    hash = "#"
-    timeout = "timeout"
-    default = "default"
+    class Config:
+        from_attributes = True
 
 
 class ActionsIvr(Enum):
@@ -210,17 +246,169 @@ class ActionsIvr(Enum):
     return_to_queue = "return_to_queue"
 
 
-class EventAndAction(BaseModel):
-    event: int | EventsIvr
+class EventAndActionZero(BaseModel):
+    event: int = 0
     action: ActionsIvr
     params: str | None
+
+
+    class Config:
+        from_attributes = True
+
+
+class EventAndActionOne(BaseModel):
+    event: int = 1
+    action: ActionsIvr
+    params: str | None
+ 
+
+    class Config:
+        from_attributes = True
+
+
+class EventAndActionTwo(BaseModel):
+    event: int = 2
+    action: ActionsIvr
+    params: str | None
+
+
+    class Config:
+        from_attributes = True
+
+
+class EventAndActionThree(BaseModel):
+    event: int = 3
+    action: ActionsIvr
+    params: str | None
+
+
+    class Config:
+        from_attributes = True
+
+
+class EventAndActionFour(BaseModel):
+    event: int = 4
+    action: ActionsIvr
+    params: str | None
+
+
+    class Config:
+        from_attributes = True
+
+
+class EventAndActionFive(BaseModel):
+    event: int = 5
+    action: ActionsIvr
+    params: str | None
+
+
+    class Config:
+        from_attributes = True
+
+
+class EventAndActionSix(BaseModel):
+    event: int = 6
+    action: ActionsIvr
+    params: str | None
+
+
+    class Config:
+        from_attributes = True
+
+
+class EventAndActionSeven(BaseModel):
+    event: int = 7
+    action: ActionsIvr
+    params: str | None
+
+
+    class Config:
+        from_attributes = True
+
+
+class EventAndActionEight(BaseModel):
+    event: int = 8
+    action: ActionsIvr
+    params: str | None
+
+
+    class Config:
+        from_attributes = True
+
+
+class EventAndActionNine(BaseModel):
+    event: int = 9
+    action: ActionsIvr
+    params: str | None
+
+
+    class Config:
+        from_attributes = True
+
+
+class EventAndActionStar(BaseModel):
+    event: str = "*"
+    action: ActionsIvr
+    params: str | None
+
+
+    class Config:
+        from_attributes = True
+
+
+class EventAndActionHash(BaseModel):
+    event: str = "#"
+    action: ActionsIvr
+    params: str | None
+
+
+    class Config:
+        from_attributes = True
+
+
+class EventAndActionTimeout(BaseModel):
+    event: str = "timeout"
+    action: ActionsIvr
+    params: str | None
+
+
+    class Config:
+        from_attributes = True
+
+
+class EventAndActionDefault(BaseModel):
+    event: str = "default"
+    action: ActionsIvr
+    params: str | None
+
+
+    class Config:
+        from_attributes = True
 
 
 class DomainIvrParamsEvents(BaseModel):
     name_menu: str
     voice_file: str | None
     ivr_id: int = Field(ge=0)
-    events_and_actions: List[EventAndAction]
+    events_and_actions: List[Union[
+        EventAndActionZero,
+        EventAndActionOne,
+        EventAndActionTwo,
+        EventAndActionThree,
+        EventAndActionFour,
+        EventAndActionFive,
+        EventAndActionSix,
+        EventAndActionSeven,
+        EventAndActionEight,
+        EventAndActionNine,
+        EventAndActionStar,
+        EventAndActionHash,
+        EventAndActionTimeout,
+        EventAndActionDefault]]
+    
+
+    class Config:
+        from_attributes = True
 
 
 class DomainRouteInfo(BaseModel):
@@ -231,6 +419,10 @@ class DomainRouteInfo(BaseModel):
     regular_exp_to: str
     tgrp: str
     outgoing_calls: str
+
+
+    class Config:
+        from_attributes = True
 
 
 class Transport(Enum):
@@ -280,6 +472,10 @@ class DomainRouteSettings(BaseModel):
     max_count_renewals_registration: int = Field(ge=0)
     ip_address: str
     destination_domain_or_sip_proxy: str
+
+
+    class Config:
+        from_attributes = True
 
 
 class DomainData(BaseModel):

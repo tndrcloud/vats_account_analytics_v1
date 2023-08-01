@@ -40,6 +40,9 @@ class Settings(BaseSettings):
     SAMPLE_PREFIX: str = env("PREFIX")
     SAMPLE_FILTER_LIST: str = env("FILTER_LIST")
     SAMPLE_INNER_NUMBER: int = env("INNER_NUMBER")
+    SAMPLE_GROUPS_LIST: str = env("GROUPS_LIST")
+    SAMPLE_IVR_NAME: str = env("IVR_NAME")
+    SAMPLE_IVR_ID: int = env("IVR_ID")
 
 
 settings = Settings()
