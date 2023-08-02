@@ -6,4 +6,4 @@ WORKDIR /vats_account_analytics_v1/app
 RUN python3 -m pip install -r ../requirements.txt
 EXPOSE 8088
 
-CMD ["python3", "main.py"]
+CMD gunicorn main:app --workers ${WORKERS} --worker-class uvicorn.workers.UvicornWorker --bind=${APP_HOST}:${APP_PORT}

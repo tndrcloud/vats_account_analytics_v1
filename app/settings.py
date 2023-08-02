@@ -22,8 +22,8 @@ class Settings(BaseSettings):
     DATABASE_URL: str = f"{DB_DRIVER}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     DATABASE_URL_TEST: str = f"{DB_DRIVER}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT_TEST}/{DB_NAME_TEST}"
 
-    APP_HOST: str = env("SERVER_HOST")
-    APP_PORT: int = env("SERVER_PORT")
+    APP_HOST: str = env("APP_HOST")
+    APP_PORT: int = env("APP_PORT")
 
     JWT_SECRET: str = env("JWT_SECRET")
     RESET_VERIF_SECRET: str = env("RESET_VERIF_SECRET")
