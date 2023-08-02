@@ -14,11 +14,12 @@ async def test_add_domain_data(superuser_token):
     assert response.status_code == 201
 
     async with async_session_maker() as session:
-        query = select(domain_data)
+        query = select(domain_data.c.main_info)
         response = await session.execute(query)
-        result = response.mappings().all()
-
-        assert result[0]["main_info"]["email"] == settings.ROOT_LOGIN
+        result = response.first()
+    
+        assert result[0]["domain_name"] == settings.DOMAIN_NAME
+        assert result[0]["email"] == settings.ROOT_LOGIN
 
 
 async def test_get_main_info(superuser_token):
@@ -31,12 +32,12 @@ async def test_get_main_info(superuser_token):
     content = response.json()
 
     async with async_session_maker() as session:
-        query = select(domain_data)
+        query = select(domain_data.c.main_info)
         response = await session.execute(query)
-        result = response.mappings().all()
+        result = response.first()
 
         assert content["domain_name"] == settings.DOMAIN_NAME
-        assert result[0]["main_info"]["domain_name"] == settings.DOMAIN_NAME
+        assert result[0]["domain_name"] == settings.DOMAIN_NAME
 
 
 async def test_get_active_users(superuser_token):
@@ -49,12 +50,12 @@ async def test_get_active_users(superuser_token):
     content = response.json()
 
     async with async_session_maker() as session:
-        query = select(domain_data)
+        query = select(domain_data.c.active_users)
         response = await session.execute(query)
-        result = response.mappings().all()
+        result = response.first()
 
         assert content[0]["login"] == settings.ROOT_LOGIN
-        assert result[0]["active_users"][0]["login"] == settings.ROOT_LOGIN
+        assert result[0][0]["login"] == settings.ROOT_LOGIN
 
 
 async def test_get_incoming_line_info(superuser_token):
@@ -67,12 +68,12 @@ async def test_get_incoming_line_info(superuser_token):
     content = response.json()
 
     async with async_session_maker() as session:
-        query = select(domain_data)
+        query = select(domain_data.c.incoming_line)
         response = await session.execute(query)
-        result = response.mappings().all()
-
+        result = response.first()
+        
         assert content[0]["params"]["incoming_line"] == settings.SAMPLE_INCOMING_LINE
-        assert result[0]["incoming_line"][0]["params"]["incoming_line"] == settings.SAMPLE_INCOMING_LINE
+        assert result[0][0]["params"]["incoming_line"] == settings.SAMPLE_INCOMING_LINE
 
 
 async def test_get_user_info(superuser_token):
@@ -87,14 +88,14 @@ async def test_get_user_info(superuser_token):
     content = response.json()
 
     async with async_session_maker() as session:
-        query = select(domain_data)
+        query = select(domain_data.c.user_info)
         response = await session.execute(query)
-        result = response.mappings().all()
-
+        result = response.first()
+        
         assert content[0]["username"] == settings.ROOT_LOGIN
         assert content[0]["inner_number"] == settings.SAMPLE_INNER_NUMBER
-        assert result[0]["user_info"][0]["username"] == settings.ROOT_LOGIN
-        assert result[0]["user_info"][0]["inner_number"] == settings.SAMPLE_INNER_NUMBER
+        assert result[0][0]["username"] == settings.ROOT_LOGIN
+        assert result[0][0]["inner_number"] == settings.SAMPLE_INNER_NUMBER
 
 
 async def test_get_contacts_user(superuser_token):
@@ -109,14 +110,14 @@ async def test_get_contacts_user(superuser_token):
     content = response.json()
 
     async with async_session_maker() as session:
-        query = select(domain_data)
+        query = select(domain_data.c.contacts_user)
         response = await session.execute(query)
-        result = response.mappings().all()
-
+        result = response.first()
+        
         assert content[0]["username"] == settings.ROOT_LOGIN
         assert content[0]["login"] == settings.ROOT_LOGIN
-        assert result[0]["contacts_user"][0]["username"] == settings.ROOT_LOGIN
-        assert result[0]["contacts_user"][0]["login"] == settings.ROOT_LOGIN
+        assert result[0][0]["username"] == settings.ROOT_LOGIN
+        assert result[0][0]["login"] == settings.ROOT_LOGIN
 
 
 async def test_get_groups_user(superuser_token):
@@ -131,13 +132,13 @@ async def test_get_groups_user(superuser_token):
     content = response.json()
 
     async with async_session_maker() as session:
-        query = select(domain_data)
+        query = select(domain_data.c.groups_user)
         response = await session.execute(query)
-        result = response.mappings().all()
+        result = response.first()
 
         assert content[0]["username"] == settings.ROOT_LOGIN
-        assert result[0]["groups_user"][0]["username"] == settings.ROOT_LOGIN
-        assert result[0]["groups_user"][0]["groups_list"][0] == settings.SAMPLE_GROUPS_LIST
+        assert result[0][0]["username"] == settings.ROOT_LOGIN
+        assert result[0][0]["groups_list"][0] == settings.SAMPLE_GROUPS_LIST
 
 
 async def test_get_group_info(superuser_token):
@@ -152,14 +153,14 @@ async def test_get_group_info(superuser_token):
     content = response.json()
 
     async with async_session_maker() as session:
-        query = select(domain_data)
+        query = select(domain_data.c.group_info)
         response = await session.execute(query)
-        result = response.mappings().all()
+        result = response.first()
 
         assert content[0]["group_name"] == settings.SAMPLE_GROUPS_LIST[0]
         assert content[0]["number"] == settings.SAMPLE_INNER_NUMBER
-        assert result[0]["group_info"][0]["group_name"] == settings.SAMPLE_GROUPS_LIST[0]
-        assert result[0]["group_info"][0]["number"] == settings.SAMPLE_INNER_NUMBER
+        assert result[0][0]["group_name"] == settings.SAMPLE_GROUPS_LIST[0]
+        assert result[0][0]["number"] == settings.SAMPLE_INNER_NUMBER
 
 
 async def test_get_users_in_group(superuser_token):
@@ -173,14 +174,14 @@ async def test_get_users_in_group(superuser_token):
     content = response.json()
 
     async with async_session_maker() as session:
-        query = select(domain_data)
+        query = select(domain_data.c.users_in_group)
         response = await session.execute(query)
-        result = response.mappings().all()
+        result = response.first()
 
         assert content[0]["group_name"] == settings.SAMPLE_GROUPS_LIST[0]
         assert content[0]["users_list"][0]["username"] == settings.ROOT_LOGIN
-        assert result[0]["users_in_group"][0]["group_name"] == settings.SAMPLE_GROUPS_LIST[0]
-        assert result[0]["users_in_group"][0]["users_list"][0]["username"] == settings.ROOT_LOGIN
+        assert result[0][0]["group_name"] == settings.SAMPLE_GROUPS_LIST[0]
+        assert result[0][0]["users_list"][0]["username"] == settings.ROOT_LOGIN
 
 
 async def test_get_name_id_ivr(superuser_token):
@@ -194,14 +195,14 @@ async def test_get_name_id_ivr(superuser_token):
     content = response.json()
 
     async with async_session_maker() as session:
-        query = select(domain_data)
+        query = select(domain_data.c.names_id_ivr)
         response = await session.execute(query)
-        result = response.mappings().all()
+        result = response.first()
 
         assert content[0]["ivr_name"] == settings.SAMPLE_IVR_NAME
         assert content[0]["ivr_id"] == settings.SAMPLE_IVR_ID
-        assert result[0]["names_id_ivr"][0]["ivr_name"] == settings.SAMPLE_IVR_NAME
-        assert result[0]["names_id_ivr"][0]["ivr_id"] == settings.SAMPLE_IVR_ID
+        assert result[0][0]["ivr_name"] == settings.SAMPLE_IVR_NAME
+        assert result[0][0]["ivr_id"] == settings.SAMPLE_IVR_ID
 
 
 async def test_get_events_and_params_ivr(superuser_token):
@@ -216,14 +217,14 @@ async def test_get_events_and_params_ivr(superuser_token):
     content = response.json()
 
     async with async_session_maker() as session:
-        query = select(domain_data)
+        query = select(domain_data.c.ivr_params_events)
         response = await session.execute(query)
-        result = response.mappings().all()
+        result = response.first()
 
         assert content[0]["name_menu"] == settings.SAMPLE_GROUPS_LIST[0]
         assert content[0]["ivr_id"] == settings.SAMPLE_IVR_ID
-        assert result[0]["ivr_params_events"][0]["name_menu"] == settings.SAMPLE_GROUPS_LIST[0]
-        assert result[0]["ivr_params_events"][0]["ivr_id"] == settings.SAMPLE_IVR_ID
+        assert result[0][0]["name_menu"] == settings.SAMPLE_GROUPS_LIST[0]
+        assert result[0][0]["ivr_id"] == settings.SAMPLE_IVR_ID
     
 
 
@@ -238,14 +239,14 @@ async def test_get_route_info(superuser_token):
     content = response.json()
 
     async with async_session_maker() as session:
-        query = select(domain_data)
+        query = select(domain_data.c.route_info)
         response = await session.execute(query)
-        result = response.mappings().all()
+        result = response.first()
 
         assert content[0]["route_id"] == settings.SAMPLE_INNER_NUMBER
         assert content[0]["name"] == settings.SAMPLE_GROUPS_LIST[0]
-        assert result[0]["route_info"][0]["route_id"] == settings.SAMPLE_INNER_NUMBER
-        assert result[0]["route_info"][0]["name"] == settings.SAMPLE_GROUPS_LIST[0]
+        assert result[0][0]["route_id"] == settings.SAMPLE_INNER_NUMBER
+        assert result[0][0]["name"] == settings.SAMPLE_GROUPS_LIST[0]
 
 
 async def test_get_route_settings(superuser_token):
@@ -259,9 +260,9 @@ async def test_get_route_settings(superuser_token):
     content = response.json()
 
     async with async_session_maker() as session:
-        query = select(domain_data)
+        query = select(domain_data.c.route_settings)
         response = await session.execute(query)
-        result = response.mappings().all()
+        result = response.first()
 
         assert content[0]["name"] == settings.SAMPLE_GROUPS_LIST[0]
-        assert result[0]["route_settings"][0]["name"] == settings.SAMPLE_GROUPS_LIST[0]
+        assert result[0][0]["name"] == settings.SAMPLE_GROUPS_LIST[0]
