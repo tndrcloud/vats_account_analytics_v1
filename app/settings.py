@@ -27,6 +27,7 @@ class Settings(BaseSettings):
 
     JWT_SECRET: str = env("JWT_SECRET")
     RESET_VERIF_SECRET: str = env("RESET_VERIF_SECRET")
+    ACCESS_TOKEN_EXPIRE: int = env("ACCESS_TOKEN_EXPIRE")
 
     REDIS_PORT: str = env("REDIS_PORT")
 

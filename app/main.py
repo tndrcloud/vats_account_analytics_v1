@@ -1,4 +1,3 @@
-import uvicorn
 from settings import settings
 from fastapi import FastAPI, Request, status, Depends
 from fastapi.encoders import jsonable_encoder
