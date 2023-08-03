@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from core.security import get_password_hash, verify_password
 from crud.base import CRUDBase
 from auth.user import User
-from auth.schemas import UserCreate, UserUpdate
+from app.auth.user_schemas import UserCreate, UserUpdate
 
 
 class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
@@ -24,7 +24,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
 
     def update(
         self, db: Session, *, db_obj: User, obj_in: Union[UserUpdate, Dict[str, Any]]
-    ) -> User:
+        ) -> User:
         if isinstance(obj_in, dict):
             update_data = obj_in
         else:
