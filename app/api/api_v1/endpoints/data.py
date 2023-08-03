@@ -28,7 +28,7 @@ async def add_domain_data(
             )
         await session.execute(statement)
         await session.commit()
-
+        
         return JSONResponse(
             status_code=status.HTTP_201_CREATED,
             content=jsonable_encoder({"detail": "successfully"})

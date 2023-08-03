@@ -3,7 +3,7 @@ from settings import settings
 
 json_data={
     "main_info": {
-        "domain_name": settings.DOMAIN_NAME,
+        "domain_name": settings.SAMPLE_DOMAIN_NAME,
         "ls_number": 0,
         "ls": 0,
         "location": "string",
@@ -66,7 +66,7 @@ json_data={
         ],
 
         "filter_list": [
-            settings.SAMPLE_FILTER_LIST
+            settings.SAMPLE_FILTER
             ]
         }
     ],
@@ -118,14 +118,14 @@ json_data={
         "username": settings.ROOT_LOGIN,
         "login": "string",
         "groups_list": [
-            settings.SAMPLE_GROUPS_LIST
+            settings.SAMPLE_GROUP
             ]
         }
     ],
 
     "group_info": [
         {
-        "group_name": settings.SAMPLE_GROUPS_LIST[0],
+        "group_name": settings.SAMPLE_GROUP,
         "number": settings.SAMPLE_INNER_NUMBER,
         "email": "string",
         "interception_call": True,
@@ -140,7 +140,7 @@ json_data={
 
     "users_in_group": [
         {
-        "group_name": settings.SAMPLE_GROUPS_LIST[0],
+        "group_name": settings.SAMPLE_GROUP,
         "users_list": [
             {
             "username": settings.ROOT_LOGIN,
@@ -159,7 +159,7 @@ json_data={
 
     "ivr_params_events": [
         {
-        "name_menu": settings.SAMPLE_GROUPS_LIST[0],
+        "name_menu": settings.SAMPLE_GROUP,
         "voice_file": "string",
         "ivr_id": settings.SAMPLE_IVR_ID,
         "events_and_actions": [
@@ -185,7 +185,7 @@ json_data={
         {
         "route_id": settings.SAMPLE_INNER_NUMBER,
         "status": True,
-        "name": settings.SAMPLE_GROUPS_LIST[0],
+        "name": settings.SAMPLE_GROUP,
         "private": True,
         "regular_exp_to": "string",
         "tgrp": "string",
@@ -195,7 +195,7 @@ json_data={
 
     "route_settings": [
         {
-        "name": settings.SAMPLE_GROUPS_LIST[0],
+        "name": settings.SAMPLE_GROUP,
         "authorization_name": "string",
         "digest_username": "string",
         "update_period": 0,
