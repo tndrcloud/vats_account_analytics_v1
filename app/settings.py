@@ -30,6 +30,7 @@ class Settings(BaseSettings):
     RESET_VERIF_SECRET: str = env("RESET_VERIF_SECRET")
     ACCESS_TOKEN_EXPIRE: int = 3600
 
+    REDIS_HOST: str = env("REDIS_HOST")
     REDIS_PORT: str = env("REDIS_PORT")
     REDIS_PASSWORD: str = env("REDIS_PASSWORD")
     REDIS_DATABASE: str = env("REDIS_DATABASE")

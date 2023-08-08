@@ -47,7 +47,7 @@ app.include_router(
 @app.on_event("startup")
 async def startup():
     redis = async_redis.from_url(
-        f"redis://localhost:{settings.REDIS_PORT}", 
+        f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}", 
         encoding="utf8", 
         decode_responses=True)
     
