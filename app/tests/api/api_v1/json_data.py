@@ -3,7 +3,7 @@ from settings import settings
 
 json_data={
     "main_info": {
-        "domain_name": settings.DOMAIN_NAME,
+        "domain_name": settings.SAMPLE_DOMAIN_NAME,
         "ls_number": 0,
         "ls": 0,
         "location": "string",
@@ -39,7 +39,7 @@ json_data={
     "active_users": [
         {
         "username": "string",
-        "login": "string",
+        "login": settings.ROOT_LOGIN,
         "sip_uri": "string",
         "ip_address": "string",
         "expired": "string"
@@ -49,7 +49,7 @@ json_data={
     "incoming_line": [
         {
         "params": {
-            "incoming_line": "string",
+            "incoming_line": settings.SAMPLE_INCOMING_LINE,
             "sip_uri": "string",
             "sip_number": True,
             "only_incoming_calls": True
@@ -58,7 +58,7 @@ json_data={
         "routing_rules": [
             {
             "state": True,
-            "prefix": "string",
+            "prefix": settings.SAMPLE_PREFIX,
             "schedule": "string",
             "redirect_to": "string",
             "action": "string"
@@ -66,15 +66,15 @@ json_data={
         ],
 
         "filter_list": [
-            "string"
+            settings.SAMPLE_FILTER
             ]
         }
     ],
 
     "user_info": [
         {
-        "username": "string",
-        "inner_number": 0,
+        "username": settings.ROOT_LOGIN,
+        "inner_number": settings.SAMPLE_INNER_NUMBER,
         "email": "string",
         "login": "string",
         "is_supervisor": True,
@@ -99,8 +99,8 @@ json_data={
 
     "contacts_user": [
         {
-        "username": "string",
-        "login": "string",
+        "username": settings.ROOT_LOGIN,
+        "login": settings.ROOT_LOGIN,
         "is_on": True,
         "do_not_display_other": True,
         "number": "string",
@@ -115,18 +115,18 @@ json_data={
 
     "groups_user": [
         {
-        "username": "string",
+        "username": settings.ROOT_LOGIN,
         "login": "string",
         "groups_list": [
-            "string"
+            settings.SAMPLE_GROUP
             ]
         }
     ],
 
     "group_info": [
         {
-        "group_name": "string",
-        "number": 0,
+        "group_name": settings.SAMPLE_GROUP,
+        "number": settings.SAMPLE_INNER_NUMBER,
         "email": "string",
         "interception_call": True,
         "skip_greeting": True,
@@ -140,10 +140,10 @@ json_data={
 
     "users_in_group": [
         {
-        "group_name": "string",
+        "group_name": settings.SAMPLE_GROUP,
         "users_list": [
             {
-            "username": "string",
+            "username": settings.ROOT_LOGIN,
             "priority": 0
                 }
             ]
@@ -152,31 +152,40 @@ json_data={
 
     "names_id_ivr": [
         {
-        "ivr_name": "string",
-        "ivr_id": 0
+        "ivr_name": settings.SAMPLE_IVR_NAME,
+        "ivr_id": settings.SAMPLE_IVR_ID
         }
     ],
 
     "ivr_params_events": [
         {
-        "name_menu": "string",
+        "name_menu": settings.SAMPLE_GROUP,
         "voice_file": "string",
-        "ivr_id": 0,
+        "ivr_id": settings.SAMPLE_IVR_ID,
         "events_and_actions": [
-            {
-            "event": 0,
-            "action": "default",
-            "params": "string"
-                }
-            ]
+            {"event": 0, "action": "redirect_to_arb_number", "params": None},
+            {"event": 1, "action": "redirect_to_menu", "params": "Тест НСК"},
+            {"event": 2, "action": "disconnect", "params": None},
+            {"event": 3, "action": "disconnect", "params": None},
+            {"event": 4, "action": "redirect_to_arb_number", "params": "1001"},
+            {"event": 5, "action": "default", "params": None},
+            {"event": 6, "action": "default", "params": None},
+            {"event": 7, "action": "disconnect", "params": None},
+            {"event": 8, "action": "redirect_to_user", "params": "Яковлев П.Е."},
+            {"event": 9, "action": "additional_inner_number_user", "params": None},
+            {"event": "*", "action": "default", "params": None},
+            {"event": "#", "action": "default", "params": None},
+            {"event": "timeout", "action": "redirect_to_menu", "params": "Тест НСК"},
+            {"event": "default", "action": "additional_inner_number_user", "params": None}
+                ]
         }
     ],
 
     "route_info": [
         {
-        "route_id": 0,
+        "route_id": settings.SAMPLE_INNER_NUMBER,
         "status": True,
-        "name": "string",
+        "name": settings.SAMPLE_GROUP,
         "private": True,
         "regular_exp_to": "string",
         "tgrp": "string",
@@ -186,7 +195,7 @@ json_data={
 
     "route_settings": [
         {
-        "name": "string",
+        "name": settings.SAMPLE_GROUP,
         "authorization_name": "string",
         "digest_username": "string",
         "update_period": 0,

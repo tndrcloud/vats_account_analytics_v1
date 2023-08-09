@@ -41,8 +41,8 @@
 - postgresql
 - alembic
 - redis
-- uvicorn
-- dockerfile, docker-compose
+- gunicorn + uvicorn
+- docker
 
 Зависимости можно установить через: pip install -r requirements.txt 
 
@@ -71,13 +71,13 @@
 - DB_NAME={название БД в PostgreSQL}
 - DB_PATH={путь для доступа к БД - postgresql+asyncpg://login:password@ip:port/dbname}
 - DB_PORT={порт для доступа к БД}
-- SERVER_HOST={IP-адрес для приложения app}
-- SERVER_PORT={порт для приложения app}
+- APP_HOST={IP-адрес для приложения app}
+- APP_PORT={порт для приложения app}
+- WORKERS={воркеры для Gunicorn, рекомендовано устанавливать число равное кол-ву процессоров ВМ}
 - JWT_SECRET={секретный ключ для JWT токена аутентификации}
 - RESET_VERIF_SECRET={секретный ключ для сброса или верификации}
 - REDIS_PASSWORD={пароль пользователя redis}
 - REDIS_PORT={порт redis БД}
 - REDIS_DATABASE={кол-во БД, стандартное значение - 16}
 
-3. Запустить команду: docker-compose -f docker-compose-app.yaml up -d из директории ./vats_account_analytics_v1
-4. Провести миграцию БД: alembic upgrade head
+3. Запустить команду: "docker-compose -f docker-compose-app.yaml up -d" из директории ./vats_account_analytics_v1

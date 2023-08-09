@@ -14,6 +14,7 @@ def create_superuser(client: TestClient):
         "role_id": 1
         }
     )
+
     return response
 
 
@@ -23,7 +24,7 @@ def get_superuser_token(client: TestClient) -> Dict[str, str]:
         "password": settings.ROOT_PASSWORD,
         }
     )
-    print(response.json())
+    
     result = response.json()["access_token"]
     token = {"Authorization": f"Bearer {result}"}
     return token

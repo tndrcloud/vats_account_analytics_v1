@@ -5,7 +5,8 @@ from models.models import domain_data
 from fastapi import Depends, status
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy import select, insert, or_
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy import select, insert
 from database.session import get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi_cache.decorator import cache
@@ -27,16 +28,18 @@ async def add_domain_data(
             )
         await session.execute(statement)
         await session.commit()
-
+        
         return JSONResponse(
             status_code=status.HTTP_201_CREATED,
             content=jsonable_encoder({"detail": "successfully"})
         )
     
-    except Exception:
+    except IntegrityError:
         return JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            content=jsonable_encoder({"detail": "validation error"})
+            content=jsonable_encoder({
+                "detail": f"domain {data.main_info.domain_name} already exist"}
+                )
         )
 
 
