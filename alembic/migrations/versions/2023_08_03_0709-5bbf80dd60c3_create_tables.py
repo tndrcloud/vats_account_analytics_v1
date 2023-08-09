@@ -59,7 +59,6 @@ def upgrade() -> None:
              {"id": 2, "name": "admin", "permissions": None},
              {"id": 3, "name": "root", "permissions": None}]
     )
-        
     # ### end Alembic commands ###
 
 
