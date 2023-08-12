@@ -1,6 +1,6 @@
 from typing import Any, Dict, Generic, Optional, Type, TypeVar, Union
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 from database.base_class import Base
@@ -55,7 +55,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def remove(
         self, session: AsyncSession, *, id: int
         ) -> ModelType:
-        obj = session.query(self.model).get(id)
+        obj = await self.get(id=id, session=session)
         
         await session.delete(obj)
         await session.commit()

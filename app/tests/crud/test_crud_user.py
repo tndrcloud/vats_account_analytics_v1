@@ -209,4 +209,28 @@ async def test_update_user() -> None:
         assert get_user
         assert user.email == get_user.email
         assert verify_password(new_password, get_user.hashed_password)
+
+
+async def test_delete_user() -> None:
+    async with async_session_maker() as session:
+        email = random_email()
+        password = random_lower_string()
+        
+        user_in = UserCreate(
+                username=settings.USER_LOGIN,
+                email=email, 
+                password=password,
+                role_id=1,
+                is_active=True,
+                is_superuser=True,
+                is_verified=False
+                )
+        
+        created_user = await crud_user.create(session, obj_in=user_in)
+        delete_user = await crud_user.remove(session=session, id=created_user.id)
+        get_user = await crud_user.get(id=created_user.id, session=session)
+        
+        assert created_user and delete_user
+        assert jsonable_encoder(created_user) == jsonable_encoder(delete_user)
+        assert get_user is None
         
