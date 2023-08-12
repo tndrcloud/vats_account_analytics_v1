@@ -5,7 +5,7 @@ from fastapi_users import BaseUserManager, IntegerIDMixin, exceptions, schemas, 
 from auth.auth import auth_backend
 from auth.user import User, get_user_db
 from settings import settings
-from auth.user_schemas import UserRead, UserCreate
+from schemas.user import UserRead, UserCreate
 
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):

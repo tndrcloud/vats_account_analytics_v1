@@ -25,6 +25,16 @@ async def validation_exception_handler(request: Request, exc: ResponseValidation
     )
 
 
+@app.on_event("startup")
+async def startup():
+    redis = async_redis.from_url(
+        f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}", 
+        encoding="utf8", 
+        decode_responses=True)
+    
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+
+
 app.include_router(
     auth_router,
     prefix=settings.API_AUTH,
@@ -42,13 +52,3 @@ app.include_router(
     prefix=settings.API_V1,
     dependencies=[Depends(current_superuser)]
 )
-
-
-@app.on_event("startup")
-async def startup():
-    redis = async_redis.from_url(
-        f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}", 
-        encoding="utf8", 
-        decode_responses=True)
-    
-    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")

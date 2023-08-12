@@ -1,11 +1,11 @@
-from sqlalchemy import insert, select
+from sqlalchemy import select
 from models.models import domain_data
 from tests.conftest import async_session_maker, client
 from tests.api.api_v1.json_data import json_data
 from settings import settings
 
 
-async def test_add_domain_data(superuser_token):
+async def test_add_domain_data(superuser_token) -> None:
     response = client.post(
         "api/v1/domain/add_domain_data", 
         headers=superuser_token,

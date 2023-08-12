@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from typing import List
-from schemas.schemas import *
+from app.schemas.data import *
 from models.models import domain_data
 from fastapi import Depends, status
 from fastapi.responses import JSONResponse

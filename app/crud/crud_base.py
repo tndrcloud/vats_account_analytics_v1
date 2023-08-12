@@ -1,7 +1,6 @@
-from fastapi import Depends
-from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
+from typing import Any, Dict, Generic, Optional, Type, TypeVar, Union
 from fastapi.encoders import jsonable_encoder
-from database.session import get_async_session
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 from database.base_class import Base
@@ -17,25 +16,27 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self.model = model
 
     async def create(
-            self, session: AsyncSession = Depends(get_async_session), *, obj_in: CreateSchemaType
-            ) -> ModelType:
+        self, session: AsyncSession, *, obj_in: CreateSchemaType
+        ) -> ModelType:
         obj_in_data = jsonable_encoder(obj_in)
-        db_obj = self.model(**obj_in_data)  
+        db_obj = self.model(**obj_in_data) 
 
-        await session.add(db_obj)
+        session.add(db_obj)
         await session.commit()
         await session.refresh(db_obj)
         return db_obj
 
     async def get(
-            self, id: Any, session: AsyncSession = Depends(get_async_session)
-            ) -> Optional[ModelType]:
-        return await session.query(self.model).filter(self.model.id == id).first()
+        self, id: int, session: AsyncSession
+        ) -> Optional[ModelType]:
+        query = select(self.model).where(self.model.id == id)
+        response = await session.execute(query)
+        return response.scalars().first()
 
     async def update(
-            self, session: AsyncSession = Depends(get_async_session), *, 
-            db_obj: ModelType, obj_in: Union[UpdateSchemaType, Dict[str, Any]]
-            ) -> ModelType:
+        self, session: AsyncSession, *, 
+        db_obj: ModelType, obj_in: Union[UpdateSchemaType, Dict[str, Any]]
+        ) -> ModelType:
         obj_data = jsonable_encoder(db_obj)
 
         if isinstance(obj_in, dict):
@@ -46,14 +47,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             if field in update_data:
                 setattr(db_obj, field, update_data[field])
 
-        await session.add(db_obj)
+        session.add(db_obj)
         await session.commit()
         await session.refresh(db_obj)
         return db_obj
 
     async def remove(
-            self, session: AsyncSession = Depends(get_async_session), *, id: int
-            ) -> ModelType:
+        self, session: AsyncSession, *, id: int
+        ) -> ModelType:
         obj = session.query(self.model).get(id)
         
         await session.delete(obj)

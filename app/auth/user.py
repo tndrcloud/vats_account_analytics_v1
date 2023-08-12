@@ -19,6 +19,10 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     is_verified: bool = Column(Boolean, default=False, nullable=False)
 
 
+    class Config:
+        from_attributes = True
+        
+
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
     yield SQLAlchemyUserDatabase(session, User)
   

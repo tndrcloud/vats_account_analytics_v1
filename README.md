@@ -80,4 +80,4 @@
 - REDIS_PORT={порт redis БД}
 - REDIS_DATABASE={кол-во БД, стандартное значение - 16}
 
-3. Запустить команду: "docker-compose -f docker-compose-app.yaml up -d" из директории ./vats_account_analytics_v1
+3. Запустить команду: "docker-compose -f docker-compose-app.yaml up -d" из корневой директории проекта 

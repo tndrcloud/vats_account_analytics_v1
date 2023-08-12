@@ -1,5 +1,23 @@
+from datetime import datetime
 from typing import Optional
+from pydantic import BaseModel, Field
 from fastapi_users import schemas
+
+
+class User(BaseModel):
+    id: int = Field(ge=0)
+    email: str
+    username: str
+    hashed_password: str
+    registered_at: datetime
+    role_id: int
+    is_active: bool
+    is_superuser: bool
+    is_verified: bool
+
+
+    class Config:
+        from_attributes = True
 
 
 class UserRead(schemas.BaseUser[int]):
