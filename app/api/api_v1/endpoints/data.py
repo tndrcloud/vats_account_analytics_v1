@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
-from schemas.schemas import *
-from models.models import domain_data
+from schemas.data import *
+from models.models import Data
 from fastapi import Depends, status
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
@@ -15,14 +15,14 @@ from fastapi_cache.decorator import cache
 router = APIRouter()
 
 
-@router.post("/add_domain_data", response_model=DomainData)
+@router.post("/add_domain_data", response_model=DomainDataSchema)
 async def add_domain_data(
-    data: DomainData,
+    data: DomainDataSchema,
     session: AsyncSession = Depends(get_async_session)
-    ) -> DomainData:
+    ) -> DomainDataSchema:
     try:
         json_data = jsonable_encoder(data)
-        statement = insert(domain_data).values(
+        statement = insert(Data).values(
             name = data.main_info.domain_name,
             **json_data
             )
@@ -49,7 +49,7 @@ async def get_main_info(
     domain: str,
     session: AsyncSession = Depends(get_async_session)
     ) -> DomainMainInfo:
-    query = select(domain_data.c.main_info).where(domain_data.c.name == domain)
+    query = select(Data.main_info).where(Data.name == domain)
     request = await session.execute(query)
     response = request.mappings().all()
 
@@ -64,7 +64,7 @@ async def get_active_users(
     domain: str,
     session: AsyncSession = Depends(get_async_session)
     ) -> List[DomainActiveUser]:
-    query = select(domain_data.c.active_users).where(domain_data.c.name == domain)
+    query = select(Data.active_users).where(Data.name == domain)
     request = await session.execute(query)
     response = request.mappings().all()
 
@@ -79,7 +79,7 @@ async def get_incoming_line_info(
     domain: str,
     session: AsyncSession = Depends(get_async_session)
     ) -> List[DomainIncomingLine]:
-    query = select(domain_data.c.incoming_line).where(domain_data.c.name == domain)
+    query = select(Data.incoming_line).where(Data.name == domain)
     request = await session.execute(query)
     response = request.mappings().all()
 
@@ -96,7 +96,7 @@ async def get_user_info(
     number: int = None,
     session: AsyncSession = Depends(get_async_session)
     ) -> List[DomainUserInfo]:
-    query = select(domain_data.c.user_info).where(domain_data.c.name == domain)
+    query = select(Data.user_info).where(Data.name == domain)
     request = await session.execute(query)
     response = request.mappings().all()
     
@@ -122,7 +122,7 @@ async def get_contacts_user(
     login: str = None,
     session: AsyncSession = Depends(get_async_session)
     ) -> List[DomainContactsUser]:
-    query = select(domain_data.c.contacts_user).where(domain_data.c.name == domain)
+    query = select(Data.contacts_user).where(Data.name == domain)
     request = await session.execute(query)
     response = request.mappings().all()
 
@@ -148,7 +148,7 @@ async def get_groups_user(
     login: str = None,
     session: AsyncSession = Depends(get_async_session)
     ) -> List[DomainGroupsUser]:
-    query = select(domain_data.c.groups_user).where(domain_data.c.name == domain)
+    query = select(Data.groups_user).where(Data.name == domain)
     request = await session.execute(query)
     response = request.mappings().all()
 
@@ -174,7 +174,7 @@ async def get_group_info(
     number: int = None,
     session: AsyncSession = Depends(get_async_session)
     ) -> List[DomainGroupInfo]:
-    query = select(domain_data.c.group_info).where(domain_data.c.name == domain)
+    query = select(Data.group_info).where(Data.name == domain)
     request = await session.execute(query)
     response = request.mappings().all()
 
@@ -199,7 +199,7 @@ async def get_users_in_group(
     group_name: str = None,
     session: AsyncSession = Depends(get_async_session)
     ) -> List[DomainUsersInGroup]:
-    query = select(domain_data.c.users_in_group).where(domain_data.c.name == domain)
+    query = select(Data.users_in_group).where(Data.name == domain)
     request = await session.execute(query)
     response = request.mappings().all()
 
@@ -224,7 +224,7 @@ async def get_name_id_ivr(
     ivr_name: str = None,
     session: AsyncSession = Depends(get_async_session)
     ) -> List[DomainNamesIdIvr]:
-    query = select(domain_data.c.names_id_ivr).where(domain_data.c.name == domain)
+    query = select(Data.names_id_ivr).where(Data.name == domain)
     request = await session.execute(query)
     response = request.mappings().all()
 
@@ -250,7 +250,7 @@ async def get_events_and_params_ivr(
     ivr_id: int = None,
     session: AsyncSession = Depends(get_async_session)
     ) -> List[DomainIvrParamsEvents]:
-    query = select(domain_data.c.ivr_params_events).where(domain_data.c.name == domain)
+    query = select(Data.ivr_params_events).where(Data.name == domain)
     request = await session.execute(query)
     response =  request.mappings().all()
 
@@ -275,7 +275,7 @@ async def get_route_info(
     route_id: int = None,
     session: AsyncSession = Depends(get_async_session)
     ) -> List[DomainRouteInfo]:
-    query = select(domain_data.c.route_info).where(domain_data.c.name == domain)
+    query = select(Data.route_info).where(Data.name == domain)
     request = await session.execute(query)
     response = request.mappings().all()
 
@@ -300,7 +300,7 @@ async def get_route_settings(
     name: str = None,
     session: AsyncSession = Depends(get_async_session)
     ) -> List[DomainRouteSettings]:
-    query = select(domain_data.c.route_settings).where(domain_data.c.name == domain)
+    query = select(Data.route_settings).where(Data.name == domain)
     request = await session.execute(query)
     response = request.mappings().all()
 

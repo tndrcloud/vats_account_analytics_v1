@@ -1,40 +1,6 @@
-from datetime import datetime
 from enum import Enum
 from pydantic import BaseModel, Field
 from typing import List, Optional, Union
-
-
-class RoleType(Enum):
-    root = "root"
-    admin = "admin"
-    user = "user"
-
-
-class Role(BaseModel):
-    id: int = Field(ge=0)
-    name: RoleType
-    permissions: str
-
-
-    class Config:
-        from_attributes = True
-
-
-class User(BaseModel):
-    id: int = Field(ge=0)
-    email: str
-    username: str
-    hashed_password: str
-    registered_at: datetime
-    role_id: int
-    is_active: bool
-    is_superuser: bool
-    is_verified: bool
-
-
-    class Config:
-        from_attributes = True
-    
 
 
 class DomainMainInfo(BaseModel):
@@ -478,7 +444,7 @@ class DomainRouteSettings(BaseModel):
         from_attributes = True
 
 
-class DomainData(BaseModel):
+class DomainDataSchema(BaseModel):
     main_info: DomainMainInfo
     active_users: List[DomainActiveUser]
     incoming_line: List[DomainIncomingLine]
