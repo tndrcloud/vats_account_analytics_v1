@@ -1,6 +1,6 @@
 from typing import Any, Dict, Generic, Optional, Type, TypeVar, Union
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy import select, delete
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 from database.base_class import Base

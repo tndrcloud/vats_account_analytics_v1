@@ -16,10 +16,6 @@ class User(BaseModel):
     is_verified: bool
 
 
-    class Config:
-        from_attributes = True
-
-
 class UserRead(schemas.BaseUser[int]):
     id: int
     username: str

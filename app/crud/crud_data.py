@@ -1,5 +1,5 @@
 from typing import List, Any, Dict, Union
-from app.crud.crud_base import CRUDBase
+from crud.crud_base import CRUDBase
 from sqlalchemy.ext.asyncio import AsyncSession
 from schemas.data import DomainData
 
@@ -11,7 +11,7 @@ class CRUDData(CRUDBase[DomainData]):
         ...
 
     async def get(
-        self, session: AsyncSession    
+        self, session: AsyncSession, *, domain_name: str    
         ) -> List[DomainData]:
         ...
 
@@ -22,8 +22,8 @@ class CRUDData(CRUDBase[DomainData]):
         ...
 
     async def delete(
-        self, session: AsyncSession   
-        ) -> None:
+        self, session: AsyncSession, *, domain_name: str   
+        ) -> List[DomainData]:
         ...
 
 

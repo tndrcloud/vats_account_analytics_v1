@@ -5,7 +5,8 @@ from fastapi.testclient import TestClient
 from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.pool import NullPool
-from models.models import role, user
+from database.base_class import Base
+from models.models import Role, User
 from sqlalchemy import insert, update
 from redis import asyncio as async_redis
 from fastapi_cache import FastAPICache
@@ -13,7 +14,6 @@ from fastapi_cache.backends.redis import RedisBackend
 from sqlalchemy.orm import sessionmaker
 from database.session import get_async_session
 from tests.utils.utils import get_superuser_token, create_superuser
-from models.models import metadata
 from settings import settings
 from main import app
 
@@ -22,6 +22,7 @@ engine_test = create_async_engine(settings.DATABASE_URL_TEST, poolclass=NullPool
 async_session_maker = sessionmaker(engine_test, class_=AsyncSession, expire_on_commit=False)
 
 
+metadata = Base.metadata
 metadata.bind = engine_test
 
 
@@ -71,7 +72,7 @@ async def async_client() -> AsyncGenerator[AsyncClient, None]:
 @pytest.fixture(scope="session")
 async def superuser_token():
     async with async_session_maker() as session:
-        statement = insert(role).values(
+        statement = insert(Role).values(
             [{"id": 1, "name": "user", "permissions": None},
              {"id": 2, "name": "admin", "permissions": None},
              {"id": 3, "name": "root", "permissions": None}])
@@ -80,7 +81,7 @@ async def superuser_token():
         await session.commit()
         create_superuser(client)
     
-        statement = update(user).where(user.c.email == settings.ROOT_LOGIN).values(role_id=3, is_superuser=True)
+        statement = update(User).where(User.email == settings.ROOT_LOGIN).values(role_id=3, is_superuser=True)
         await session.execute(statement)
         await session.commit()
         

@@ -1,9 +1,8 @@
 from sqlalchemy import select
 from typing import Any, Dict, Optional, Union
 from core.security import get_password_hash, verify_password
-from app.crud.crud_base import CRUDBase
-from auth.user import User
-from sqlalchemy.orm import Session
+from crud.crud_base import CRUDBase
+from models.models import User
 from sqlalchemy.ext.asyncio import AsyncSession
 from schemas.user import UserCreate, UserUpdate
 

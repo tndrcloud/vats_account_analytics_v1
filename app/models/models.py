@@ -1,51 +1,57 @@
 from datetime import datetime
-from sqlalchemy import MetaData, Table, Column, Integer, Boolean, String, TIMESTAMP, ForeignKey, JSON
+from fastapi import Depends
+from fastapi_users.db import SQLAlchemyBaseUserTable, SQLAlchemyUserDatabase
+from sqlalchemy import Column, String, JSON, Boolean, Integer, TIMESTAMP, ForeignKey
+from sqlalchemy.ext.asyncio import AsyncSession
+from database.session import get_async_session
+from database.base_class import Base
 
 
-metadata = MetaData()
-
-
-role = Table(
-    "role",
-    metadata,
+class Role(Base):
+    id: int = Column(Integer, primary_key=True)
+    name: str = Column(String, nullable=False)
+    permissions: str = Column(JSON, nullable=True)
     
-    Column("id", Integer, primary_key=True),
-    Column("name", String, nullable=False),
-    Column("permissions", JSON)
-)
+
+    class Config:
+        from_attributes = True
 
 
-user = Table(
-    "user",
-    metadata,
-
-    Column("id", Integer, primary_key=True),
-    Column("email", String, nullable=False),
-    Column("username", String, nullable=False),
-    Column("hashed_password", String, nullable=False),
-    Column("registered_at", TIMESTAMP, default=datetime.utcnow),
-    Column("role_id", Integer, ForeignKey(role.c.id)),
-    Column("is_active", Boolean, default=True, nullable=False),
-    Column("is_superuser", Boolean, default=False, nullable=False),
-    Column("is_verified",Boolean, default=False, nullable=False)
-)
+class User(SQLAlchemyBaseUserTable[int], Base):
+    id: int = Column(Integer, primary_key=True)
+    email: str = Column(String, nullable=False)
+    username: str = Column(String, nullable=False)
+    hashed_password: str = Column(String(length=1024), nullable=False)
+    registered_at: datetime = Column(TIMESTAMP, default=datetime.utcnow)
+    role_id: int = Column(Integer, ForeignKey(Role.id))
+    is_active: bool = Column(Boolean, default=True, nullable=False)
+    is_superuser: bool = Column(Boolean, default=False, nullable=False)
+    is_verified: bool = Column(Boolean, default=False, nullable=False)
 
 
-domain_data = Table(
-    "domain_data",
-    metadata,
-    
-    Column("name", String, primary_key=True),
-    Column("main_info", JSON, nullable=False),
-    Column("active_users", JSON, nullable=False),
-    Column("incoming_line", JSON, nullable=False),
-    Column("user_info", JSON, nullable=False),
-    Column("contacts_user", JSON, nullable=False),
-    Column("groups_user", JSON, nullable=False),
-    Column("group_info", JSON, nullable=False),
-    Column("users_in_group", JSON, nullable=False),
-    Column("names_id_ivr", JSON, nullable=False),
-    Column("ivr_params_events", JSON, nullable=False),
-    Column("route_info", JSON, nullable=False),
-    Column("route_settings", JSON, nullable=False)
-)
+    class Config:
+        from_attributes = True
+        
+
+class Data(Base):
+    name: str = Column(String, primary_key=True)
+    main_info: str = Column(JSON, nullable=False)
+    active_users: str = Column(JSON, nullable=False)
+    incoming_line: str = Column(JSON, nullable=False)
+    user_info: str = Column(JSON, nullable=False)
+    contacts_user: str = Column(JSON, nullable=False)
+    groups_user: str = Column(JSON, nullable=False)
+    group_info: str = Column(JSON, nullable=False)
+    users_in_group: str = Column(JSON, nullable=False)
+    names_id_ivr: str = Column(JSON, nullable=False)
+    ivr_params_events: str = Column(JSON, nullable=False)
+    route_info: str = Column(JSON, nullable=False)
+    route_settings: str = Column(JSON, nullable=False)
+
+
+    class Config:
+        from_attributes = True
+
+
+async def get_user_db(session: AsyncSession = Depends(get_async_session)):
+    yield SQLAlchemyUserDatabase(session, User)

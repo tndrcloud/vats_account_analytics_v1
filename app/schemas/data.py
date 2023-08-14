@@ -444,7 +444,7 @@ class DomainRouteSettings(BaseModel):
         from_attributes = True
 
 
-class DomainData(BaseModel):
+class DomainDataSchema(BaseModel):
     main_info: DomainMainInfo
     active_users: List[DomainActiveUser]
     incoming_line: List[DomainIncomingLine]
