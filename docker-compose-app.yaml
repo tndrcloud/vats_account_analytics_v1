@@ -53,22 +53,24 @@ services:
       - REDIS_DATABASE=${REDIS_DATABASE}
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli", "--raw", "incr", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     restart: always
     networks:
       - custom
 
   app:
+    build: .
     container_name: app
     command: ["bash", "../scripts/app.sh"]
-    image: app
     depends_on:
       postgresql:
         condition: service_healthy
     env_file:
       - .env
-    build:
-      context: .
-      dockerfile: Dockerfile
     ports:
       - "8088:8088"
     restart: always
@@ -76,28 +78,25 @@ services:
       - custom
 
   celery:
+    build: .
     container_name: celery
     command: ["bash", "../scripts/celery.sh", "celery"]
     image: app
     depends_on:
-      - app
-      - redis
-    build:
-      context: .
+      redis:
+        condition: service_healthy
     restart: always
     networks:
       - custom
 
   flower:
+    build: .
     container_name: flower
     command: ["bash", "../scripts/celery.sh", "flower"]
     image: app
     depends_on:
-      - app
-      - redis
-      - celery
-    build:
-      context: .
+      redis:
+        condition: service_healthy
     ports:
       - "5555:5555"
     restart: always
