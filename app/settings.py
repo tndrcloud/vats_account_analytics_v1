@@ -25,6 +25,7 @@ class Settings(BaseSettings):
 
     APP_HOST: str = "0.0.0.0"
     APP_PORT: int = 8088
+    WORKERS: int = 4
 
     JWT_SECRET: str = env("JWT_SECRET")
     RESET_VERIF_SECRET: str = env("RESET_VERIF_SECRET")
