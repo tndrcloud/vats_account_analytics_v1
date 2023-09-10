@@ -11,6 +11,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends gcc
 
 COPY requirements.txt .
+
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /source/wheels -r requirements.txt
 
 
@@ -23,11 +24,11 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /vats_account_analytics_v1
 
-COPY --from=build /source/wheels /wheels
-RUN pip install --no-cache /wheels/* 
-
 COPY alembic ./alembic
 COPY app ./app
 COPY .env alembic.ini config.py pyproject.toml ./
+COPY --from=build /source/wheels /wheels
+
+RUN pip install --no-cache /wheels/* 
 
 CMD ["python", "app/main.py"]
