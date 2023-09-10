@@ -1,19 +1,29 @@
 import asyncio
 import pytest
+
 from httpx import AsyncClient
+
 from fastapi.testclient import TestClient
-from typing import AsyncGenerator
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.pool import NullPool
-from database.base_class import Base
-from models.models import Role, User
-from sqlalchemy import insert, update
-from redis import asyncio as async_redis
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
+
+from typing import AsyncGenerator
+
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.pool import NullPool
+from sqlalchemy import insert
+from sqlalchemy import update
+
+from redis import asyncio as async_redis
+
+from database.base_class import Base
+from models.models import Role
+from models.models import User
 from database.session import get_async_session
-from tests.utils.utils import get_superuser_token, create_superuser
+from tests.utils.utils import get_superuser_token
+from tests.utils.utils import create_superuser
 from settings import settings
 from main import app
 

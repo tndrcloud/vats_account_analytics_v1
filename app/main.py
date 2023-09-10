@@ -1,13 +1,26 @@
-from settings import settings
-from fastapi import FastAPI, Request, status, Depends
+import uvicorn
+
+from fastapi import FastAPI
+from fastapi import Request
+from fastapi import status
+from fastapi import Depends
+
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import ResponseValidationError
 from fastapi.responses import JSONResponse
-from api.api_v1.api import api_router
-from auth.manager import auth_router, register_router, current_superuser
-from redis import asyncio as async_redis
+
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
+
+from redis import asyncio as async_redis
+
+from settings import settings
+from api.api_v1.api import api_router
+from database.utils import init_db
+
+from auth.manager import auth_router
+from auth.manager import register_router
+from auth.manager import current_superuser
 
 
 app = FastAPI(
@@ -27,6 +40,7 @@ async def validation_exception_handler(request: Request, exc: ResponseValidation
 
 @app.on_event("startup")
 async def startup():
+    init_db()
     redis = async_redis.from_url(
         f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}", 
         encoding="utf8", 
@@ -52,3 +66,12 @@ app.include_router(
     prefix=settings.API_V1,
     dependencies=[Depends(current_superuser)]
 )
+
+
+if __name__ == "__main__":
+    uvicorn.run(
+        app=settings.APP_NAME, 
+        host=settings.APP_HOST, 
+        port=settings.APP_PORT,
+        workers=settings.WORKERS
+        )

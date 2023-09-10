@@ -1,5 +1,7 @@
 from sqlalchemy import insert, select, update
-from models.models import Role, User
+
+from models.models import Role
+from models.models import User
 from tests.conftest import async_session_maker
 from settings import settings
 

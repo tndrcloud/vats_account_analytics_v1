@@ -1,6 +1,10 @@
 from datetime import datetime
+
 from typing import Optional
-from pydantic import BaseModel, Field
+
+from pydantic import BaseModel
+from pydantic import Field
+
 from fastapi_users import schemas
 
 

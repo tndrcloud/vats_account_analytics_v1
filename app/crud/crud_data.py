@@ -1,6 +1,11 @@
-from typing import List, Any, Dict, Union
-from crud.crud_base import CRUDBase
+from typing import List
+from typing import Any
+from typing import Dict
+from typing import Union
+
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from crud.crud_base import CRUDBase
 from schemas.data import DomainData
 
 

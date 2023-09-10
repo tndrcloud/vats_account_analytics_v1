@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = f"{DB_DRIVER}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     DATABASE_URL_TEST: str = f"{DB_DRIVER}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT_TEST}/{DB_NAME_TEST}"
 
+    APP_NAME: str = "main:app"
     APP_HOST: str = "0.0.0.0"
     APP_PORT: int = 8088
     WORKERS: int = 4

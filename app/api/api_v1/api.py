@@ -1,5 +1,8 @@
 from fastapi import APIRouter
-from api.api_v1.endpoints import data, analytics, calls
+
+from api.api_v1.endpoints import data 
+from api.api_v1.endpoints import analytics
+from api.api_v1.endpoints import calls
 
 
 api_router = APIRouter()

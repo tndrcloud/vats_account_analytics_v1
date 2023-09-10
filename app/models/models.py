@@ -1,8 +1,19 @@
 from datetime import datetime
+
 from fastapi import Depends
-from fastapi_users.db import SQLAlchemyBaseUserTable, SQLAlchemyUserDatabase
-from sqlalchemy import Column, String, JSON, Boolean, Integer, TIMESTAMP, ForeignKey
+from fastapi_users.db import SQLAlchemyBaseUserTable
+from fastapi_users.db import SQLAlchemyUserDatabase
+
+from sqlalchemy import Column
+from sqlalchemy import String
+from sqlalchemy import JSON
+from sqlalchemy import Boolean
+from sqlalchemy import Integer
+from sqlalchemy import TIMESTAMP
+from sqlalchemy import ForeignKey
+
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from database.session import get_async_session
 from database.base_class import Base
 
