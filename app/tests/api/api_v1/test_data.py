@@ -1,6 +1,9 @@
 from sqlalchemy import select
+
+from tests.conftest import async_session_maker
+from tests.conftest import client
+
 from models.models import Data
-from tests.conftest import async_session_maker, client
 from tests.api.api_v1.json_data import json_data
 from settings import settings
 

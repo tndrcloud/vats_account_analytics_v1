@@ -2,4 +2,6 @@
 # imported by Alembic
 
 from app.database.base_class import Base 
-from app.models.models import Role, User, Data  
+from app.models.models import Role
+from app.models.models import User  
+from app.models.models import Data

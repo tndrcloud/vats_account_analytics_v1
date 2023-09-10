@@ -1,15 +1,20 @@
-from fastapi import APIRouter
 from typing import List
-from schemas.data import *
-from models.models import Data
-from fastapi import Depends, status
+
+from fastapi import APIRouter
+from fastapi import Depends
+from fastapi import status
+
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
+from fastapi_cache.decorator import cache
+
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select, insert
-from database.session import get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi_cache.decorator import cache
+
+from database.session import get_async_session
+from schemas.data import *
+from models.models import Data
 
 
 router = APIRouter()

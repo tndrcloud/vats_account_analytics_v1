@@ -1,10 +1,13 @@
 from fastapi.encoders import jsonable_encoder
-from crud.crud_user import crud_user
+
 from settings import settings
+
+from crud.crud_user import crud_user
 from core.security import verify_password
 from schemas.user import UserCreate
 from tests.conftest import async_session_maker
-from tests.utils.utils import random_email, random_lower_string
+from tests.utils.utils import random_email
+from tests.utils.utils import random_lower_string
 
 
 async def test_create_user() -> None:

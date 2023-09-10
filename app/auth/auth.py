@@ -1,5 +1,7 @@
-from fastapi_users.authentication import BearerTransport, AuthenticationBackend
+from fastapi_users.authentication import BearerTransport 
 from fastapi_users.authentication import JWTStrategy
+from fastapi_users.authentication import AuthenticationBackend
+
 from settings import settings
 
 

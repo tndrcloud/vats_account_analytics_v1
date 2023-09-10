@@ -1,9 +1,16 @@
+from typing import Any 
+from typing import Dict
+from typing import Optional
+from typing import Union
+
+from core.security import get_password_hash
+from core.security import verify_password
+
 from sqlalchemy import select
-from typing import Any, Dict, Optional, Union
-from core.security import get_password_hash, verify_password
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from crud.crud_base import CRUDBase
 from models.models import User
-from sqlalchemy.ext.asyncio import AsyncSession
 from schemas.user import UserCreate, UserUpdate
 
 

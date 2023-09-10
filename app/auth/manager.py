@@ -1,7 +1,13 @@
 from typing import Optional
+
 from fastapi import Depends, Request
 from fastapi_users import FastAPIUsers
-from fastapi_users import BaseUserManager, IntegerIDMixin, exceptions, schemas, models
+from fastapi_users import BaseUserManager 
+from fastapi_users import IntegerIDMixin
+from fastapi_users import exceptions
+from fastapi_users import schemas
+from fastapi_users import models
+
 from auth.auth import auth_backend
 from models.models import User, get_user_db
 from settings import settings
